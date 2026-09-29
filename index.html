@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Réactivation des connaissances – Groupe afec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --blue:#2A4A9B; --blue-d:#1C3572; --blue-s:#DCE6F7;
+  --green:#4E9E31; --green-d:#3A7A23; --green-s:#E5F2DC;
+  --ink:#1B2540; --muted:#59627A; --line:#CFD8E8;
+  --paper:#F3F6FB; --card:#FFFFFF; --amber:#C98A00; --red:#B8372F;
+  --r:14px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+a{color:var(--blue)}
+h1,h2,h3{line-height:1.2;margin:0}
+h1{font-size:clamp(1.6rem,4vw,2.3rem)}
+h2{font-size:1.25rem}
+h3{font-size:1.05rem}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.top{background:var(--blue);color:#fff}
+.top .in{max-width:1100px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:14px}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700}
+.top small{opacity:.8;margin-left:auto;font-size:.85rem}
+main{max-width:1100px;margin:auto;padding:24px 20px 120px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--card);padding:9px 15px;border-radius:10px;cursor:pointer;text-decoration:none;color:var(--ink);font-weight:700;font-size:.95rem;white-space:nowrap}
+.btn:hover{border-color:var(--blue)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue-d)}
+.btn.go{background:var(--green);border-color:var(--green);color:#fff}
+.btn.ghost{background:transparent}
+.btn.sm{padding:6px 11px;font-size:.88rem}
+.btn.ok{border-color:var(--green);color:var(--green-d)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.spacer{flex:1}
+.muted{color:var(--muted)}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:20px}
+.hero{padding:28px 0 30px;max-width:720px}
+.hero h1{font-size:clamp(2rem,6vw,3.4rem);color:var(--blue-d)}
+.hero p{font-size:1.15rem;color:var(--muted);margin:.6em 0 0}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.choice{display:block;text-decoration:none;color:var(--ink);background:var(--card);border-radius:var(--r);padding:26px;border:2px dashed var(--blue);position:relative}
+.choice.g{border-color:var(--green)}
+.choice:hover{background:var(--blue-s)}
+.choice.g:hover{background:var(--green-s)}
+.choice .ico{font-size:2rem}
+.choice h2{margin:.4em 0 .3em;color:var(--blue-d)}
+.choice.g h2{color:var(--green-d)}
+.choice p{margin:0;color:var(--muted)}
+.cut{position:absolute;top:-13px;left:22px;background:var(--paper);padding:0 6px}
+.days{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.day{border:2px solid var(--line);background:var(--card);border-radius:var(--r);padding:12px 14px;text-align:left;cursor:pointer}
+.day b{display:block;font-size:1.4rem;color:var(--blue-d)}
+.day span{font-size:.88rem;color:var(--muted)}
+.day.on{border-color:var(--blue);background:var(--blue-s)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:18px}
+.panel-h{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+.step{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+textarea,select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}
+textarea:focus,select:focus{border-color:var(--blue);outline:none}
+select{width:auto}
+.empty{color:var(--muted);font-style:italic;margin:0}
+.groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.gcard{border:2px dashed var(--blue);border-radius:var(--r);padding:16px;background:#fff}
+.gcard:nth-child(even){border-color:var(--green)}
+.gnum{font-weight:700;font-size:1.15rem}
+.themes{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.theme{font-size:.85rem;font-style:italic;padding:3px 10px;border-radius:999px;background:var(--blue-s);color:var(--blue-d)}
+.theme.t1{background:var(--green-s);color:var(--green-d)}
+.members{list-style:none;padding:0;margin:10px 0 12px;display:grid;gap:6px}
+.members li{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.rchip{font-size:.8rem;padding:2px 8px;border-radius:6px;background:var(--paper);border:1px solid var(--line);white-space:nowrap}
+.gcard footer{display:flex;gap:8px;flex-wrap:wrap}
+.timer{display:grid;gap:10px}
+.tdisp{font-size:clamp(2.6rem,9vw,4.2rem);font-weight:700;font-variant-numeric:tabular-nums;color:var(--blue-d);line-height:1}
+.tdisp.low{color:var(--amber)}
+.tdisp.done{color:var(--red)}
+.tbar{height:8px;background:var(--blue-s);border-radius:99px;overflow:hidden}
+.tbar div{height:100%;background:var(--green);transition:width .25s linear}
+.timer-full:fullscreen{background:#fff;display:grid;place-content:center;padding:40px}
+.timer-full:fullscreen .tdisp{font-size:22vw;text-align:center}
+.ghead{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;margin-bottom:18px}
+.ghead .timer{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;min-width:270px}
+.ghead .tdisp{font-size:2.6rem}
+.kicker{color:var(--green-d);font-weight:700;margin:0 0 4px}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.role{border-left:4px solid var(--blue);padding:6px 12px;background:var(--paper);border-radius:0 8px 8px 0}
+.role:nth-child(even){border-color:var(--green)}
+.role b{display:block}
+.role span{font-size:.88rem;color:var(--muted)}
+.progress{position:sticky;top:0;z-index:5;background:var(--paper);padding:10px 0;display:flex;align-items:center;gap:12px}
+.pbar{flex:1;height:10px;background:var(--blue-s);border-radius:99px;overflow:hidden}
+.pbar div{height:100%;background:var(--green);width:0;transition:width .3s}
+.saved{font-size:.85rem;color:var(--green-d);min-width:90px}
+.tblock{margin:26px 0 8px}
+.tblock h2{color:var(--blue-d);padding-bottom:6px;border-bottom:3px solid var(--blue)}
+.tblock.t1 h2{color:var(--green-d);border-color:var(--green)}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-top:14px}
+.qhead{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.qn{flex:none;width:32px;height:32px;border-radius:50%;background:var(--blue-s);color:var(--blue-d);font-weight:700;display:grid;place-items:center}
+.qcard.complete .qn{background:var(--green);color:#fff}
+.fields{display:grid;gap:10px}
+.flabel{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.92rem;margin-bottom:4px}
+.dot{width:12px;height:12px;border-radius:3px;border:2px solid var(--line);flex:none}
+.dot.on{background:var(--green);border-color:var(--green)}
+.actions{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--line);padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;justify-content:center;flex-wrap:wrap;z-index:10}
+.aq{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-top:12px}
+.aq h3{margin-bottom:10px;font-size:1.15rem}
+.aline{margin:6px 0;display:grid;grid-template-columns:170px 1fr;gap:10px}
+.aline b{color:var(--muted);font-size:.92rem}
+.aline .v{white-space:pre-wrap}
+.aline .v.none{color:#9aa2b5;font-style:italic}
+.piste{margin-top:12px;padding:10px 14px;background:#FFF8E6;border-left:4px solid var(--amber);border-radius:0 8px 8px 0;font-size:.95rem}
+.hide-pistes .piste{display:none}
+.big .aq{font-size:1.2rem}
+.big .aq h3{font-size:1.4rem}
+.notice{background:var(--blue-s);border-radius:10px;padding:12px 16px;margin:12px 0}
+.switch{display:inline-flex;align-items:center;gap:8px;font-weight:700;cursor:pointer}
+.switch input{width:20px;height:20px;accent-color:var(--amber)}
+.qrwall{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.qrcard{background:#fff;border:2px dashed var(--blue);border-radius:var(--r);padding:16px;text-align:center}
+.qrcard:nth-child(even){border-color:var(--green)}
+.qrbox{display:grid;place-items:center;margin:12px auto;min-height:200px}
+.qrbox img,.qrbox canvas{max-width:100%;height:auto}
+.qrcard .names{font-size:.92rem;color:var(--muted)}
+.modal{position:fixed;inset:0;background:rgba(20,30,60,.55);display:grid;place-items:center;z-index:50;padding:20px}
+.modal .box{background:#fff;border-radius:var(--r);padding:22px;max-width:420px;width:100%;text-align:center}
+.link{word-break:break-all;font-size:.8rem;background:var(--paper);padding:8px;border-radius:8px;text-align:left}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;z-index:60}
+@media (max-width:720px){
+  body{font-size:16px}
+  .ghead{grid-template-columns:1fr}
+  .ghead .timer{min-width:0}
+  .days{grid-template-columns:1fr}
+  .aline{grid-template-columns:1fr;gap:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  .top,.actions,.progress,.no-print,.toolbar .btn{display:none!important}
+  body{background:#fff}
+  .qcard,.aq,.panel{break-inside:avoid;border-color:#999}
+  main{padding:0}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="in">
+    <a class="logo" href="#/">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="6" r="4" fill="#5AAE3A"/><path d="M4 12l9 5-5 10M26 12l-9 5 5 10" stroke="#fff" stroke-width="3.2" fill="none" stroke-linecap="round"/></svg>
+      Groupe afec
+    </a>
+    <small>Réactivation des connaissances</small>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+/* ===== CONTENU : questions + pistes (visibles côté formateur uniquement) ===== */
+const DATA = {
+ J2:{label:"J2", rappel:"Rappel de la Journée 1", themes:[
+  {name:"Vie administrative & financière", qs:[
+   [`À quoi sert d'avoir une domiciliation ?`,
+    `Avoir une adresse officielle pour recevoir son courrier et faire valoir ses droits (CAF, préfecture, banque, impôts…) quand on n'a pas de logement stable. Elle se demande au CCAS/CIAS ou auprès d'une association agréée. <i>Ex. : une personne hébergée chez des amis se domicilie au CCAS pour recevoir les courriers de la préfecture.</i>`],
+   [`Que faire en cas de multiples refus d'ouverture de compte bancaire ?`,
+    `Utiliser le <b>droit au compte</b> : demander une attestation de refus à la banque, puis saisir la <b>Banque de France</b>, qui désigne une banque obligée d'ouvrir un compte avec les services bancaires de base gratuits.`],
+   [`Quel site pour échanger son permis ? Pourrait-il y avoir des aides pour passer son permis ? Pour quels cas ?`,
+    `Échange d'un permis étranger : en ligne sur le site de l'<b>ANTS</b>, dans l'année qui suit l'installation en France (pays ayant un accord d'échange). Aides : <b>CPF</b>, <b>France Travail</b> pour les demandeurs d'emploi, <b>permis à 1 €/jour</b> (15-25 ans), aide aux apprentis, aides de la région, de la commune ou de la mission locale.`],
+   [`Une fausse déclaration ou absence de déclaration d'impôts est sans risque. Vrai ou Faux ?`,
+    `<b>Faux.</b> Majorations (10 % à 40 %, jusqu'à 80 % en cas de fraude) + intérêts de retard, voire poursuites. Et l'avis d'imposition est demandé pour de nombreuses démarches : logement social, CAF, titre de séjour, naturalisation.`],
+   [`Quelles conditions pour une demande de naturalisation ?`,
+    `Être majeur, résider en France de façon stable depuis au moins <b>5 ans</b> (réduit dans certains cas, ex. 2 ans d'études supérieures réussies en France), ressources stables, français niveau <b>B2</b> (depuis 2026), connaissance de l'histoire et des valeurs de la République (examen civique), adhésion aux principes républicains, bonne conduite. Demande en ligne (ANEF).`]
+  ]},
+  {name:"Logement & urgences", qs:[
+   [`Seul le locataire a des obligations vis-à-vis du bailleur. Vrai ou Faux ?`,
+    `<b>Faux.</b> Le locataire paie loyer et charges, s'assure, entretient le logement. Le bailleur fournit un <b>logement décent</b>, fait les grosses réparations, garantit la jouissance paisible, donne les quittances. <i>Ex. : chaudière en panne = à la charge du propriétaire.</i>`],
+   [`La demande de logement social est renouvelée automatiquement. Vrai ou Faux ?`,
+    `<b>Faux.</b> À renouveler <b>chaque année</b> avant la date anniversaire (demande-logement-social.gouv.fr ou guichet), sinon elle est supprimée et on perd son ancienneté.`],
+   [`Quelle démarche pour les demandes de logements social urgentes ?`,
+    `Le recours <b>DALO</b> devant la commission de médiation du département (délai anormalement long, logement indigne ou suroccupé, menace d'expulsion…). En urgence : le <b>115</b> (hébergement d'urgence) et le SIAO.`],
+   [`Pourquoi faut-il connaître les numéros d'urgence ?`,
+    `Pour réagir vite et sauver des vies. <b>15</b> SAMU · <b>17</b> police · <b>18</b> pompiers · <b>112</b> urgence européenne · <b>114</b> par SMS · <b>115</b> hébergement · <b>119</b> enfance en danger · <b>3919</b> violences faites aux femmes.`]
+  ]},
+  {name:"Santé & Travail", qs:[
+   [`Comment fonctionne la couverture maladie ? (Remboursement, prise en charge…)`,
+    `L'<b>Assurance maladie</b> rembourse une partie des soins (ex. 70 % d'une consultation chez le médecin traitant). La <b>complémentaire santé</b> (mutuelle, ou C2S selon les ressources) rembourse le reste. Carte Vitale, médecin traitant, parcours de soins. Sans titre de séjour : AME.`],
+   [`Quels sont les droits d'un patient ?`,
+    `Être informé, donner son <b>consentement</b> ou refuser un soin, <b>secret médical</b>, accès à son dossier, libre choix du médecin, dignité, non-discrimination, soulagement de la douleur (loi du 4 mars 2002).`],
+   [`Où puis-je consulter mes droits et devoirs au travail ?`,
+    `Code du travail (Légifrance, code.travail.gouv.fr), <b>convention collective</b>, contrat, règlement intérieur, service-public.fr. Aide : inspection du travail, CSE, syndicats.`],
+   [`En cas de discrimination, harcèlement etc., au travail, je peux…`,
+    `Garder des preuves, en parler au CSE ou au médecin du travail, alerter l'employeur, contacter l'<b>inspection du travail</b>, saisir le <b>Défenseur des droits</b> (3928), les prud'hommes, porter plainte (le harcèlement est un délit).`],
+   [`Qu'est-ce que la VAE ? Pourrait-il y avoir des aides au financement de cette démarche ?`,
+    `La <b>Validation des acquis de l'expérience</b> : obtenir tout ou partie d'un diplôme grâce à son expérience (pro, bénévole…). Portail France VAE. Financement : CPF, France Travail, employeur/OPCO, région.`],
+   [`Connaissez-vous des associations pour l'accompagnement vers l'emploi et/ou la création d'entreprise ?`,
+    `France Travail, Mission locale (16-25 ans), Cap emploi, APEC ; création : <b>BGE</b>, <b>Adie</b> (microcrédit), France Active, Initiative France, CCI, Chambre des métiers.`],
+   [`Suis-je autorisé à exercer une activité non salariale alors que je possède un titre de séjour salarié d'une durée de validité de 1 an ?`,
+    `<b>En principe non</b> : la carte « salarié » autorise une activité salariée. Pour créer une entreprise, demander un <b>changement de statut</b> (carte « entrepreneur / profession libérale ») en préfecture.`]
+  ]},
+  {name:"Famille & Valeurs républicaines", qs:[
+   [`Qu'est-ce que l'autorité parentale ? À quoi engage-t-elle son détenteur ?`,
+    `Droits et devoirs des parents dans l'intérêt de l'enfant jusqu'à ses 18 ans : protéger sa sécurité, sa santé, sa moralité, assurer son éducation. Exercée en commun, même après séparation. Violences éducatives interdites (loi de 2019).`],
+   [`Qu'est-ce que le dispositif OEPRE ?`,
+    `<b>Ouvrir l'École aux Parents pour la Réussite des Enfants</b> : formation gratuite dans les écoles et collèges pour les parents étrangers : français, fonctionnement de l'école, valeurs de la République.`],
+   [`Quel dispositif pour accompagner les parents ?`,
+    `Les <b>REAAP</b> (réseaux d'écoute, d'appui et d'accompagnement des parents), lieux d'accueil enfants-parents, CAF, PMI, médiation familiale, maisons des familles.`],
+   [`Quels sont les principes de la République française ? Que signifient-ils ?`,
+    `Article 1 de la Constitution : République <b>indivisible</b> (une loi pour tous), <b>laïque</b> (neutralité religieuse de l'État), <b>démocratique</b> (le pouvoir vient du peuple), <b>sociale</b> (solidarité).`],
+   [`Quelles sont les Valeurs de la République française ? Et les symboles ?`,
+    `<b>Liberté, Égalité, Fraternité</b> (+ laïcité). Symboles : drapeau bleu-blanc-rouge, <i>La Marseillaise</i>, Marianne, la devise, le 14 juillet, le sceau ; le coq est un symbole non officiel.`],
+   [`Qu'est-ce que la Laïcité ? Quels sont les piliers de cette loi ?`,
+    `Loi du <b>9 décembre 1905</b>. Piliers : <b>liberté de conscience</b> et libre exercice des cultes, <b>séparation</b> des Églises et de l'État, <b>neutralité</b> de l'État et égalité de tous quelle que soit la religion.`],
+   [`La langue française est la langue officielle en France, depuis quelle année ?`,
+    `Ordonnance de <b>Villers-Cotterêts (1539)</b> pour les actes officiels ; inscrite dans la Constitution en <b>1992</b> (article 2).`]
+  ]}
+ ]},
+ J3:{label:"J3", rappel:"Rappel de la Journée 2", themes:[
+  {name:"Histoire de France", qs:[
+   [`Quels régimes politiques la France a-t-elle connus ?`,
+    `Monarchie (absolue, puis constitutionnelle en 1791), cinq Républiques (1792, 1848, 1870, 1946, 1958), deux Empires (Napoléon Ier, Napoléon III), Restauration et monarchie de Juillet (1814-1848), régime de Vichy (1940-1944).`],
+   [`Quels événements et personnages phares de l'Histoire de la France avez-vous retenus lors de la journée précédente ?`,
+    `Réponses libres. Pistes : Révolution de 1789, Napoléon, Victor Schœlcher, Jules Ferry, Jean Jaurès, de Gaulle et la Résistance, Simone Veil, Robert Badinter…`],
+   [`Citez cinq dates importantes de l'Histoire de la France.`,
+    `<b>1789</b> Révolution, DDHC · <b>1848</b> abolition de l'esclavage, suffrage universel masculin · <b>1905</b> laïcité · <b>1944</b> vote des femmes · <b>1958</b> Ve République.`],
+   [`Durant la troisième et la cinquième République, la France a connu de grandes avancées : quelles étaient ces lois ?`,
+    `IIIe : lois <b>Ferry</b> 1881-1882 (école gratuite, obligatoire, laïque), presse 1881, syndicats 1884, associations <b>1901</b>, laïcité <b>1905</b>. Ve : majorité à 18 ans 1974, loi <b>Veil</b> 1975, abolition de la peine de mort <b>1981</b>, PACS 1999, mariage pour tous 2013, IVG dans la Constitution 2024.`],
+   [`On dit que la France est partout dans le monde. Comment peut-on expliquer cela ?`,
+    `Les <b>outre-mer</b> sur tous les océans (Guadeloupe, Martinique, Guyane, Réunion, Mayotte, Polynésie, Nouvelle-Calédonie…) : 2e espace maritime mondial. Aussi : le français sur 5 continents, le réseau diplomatique, le siège permanent au Conseil de sécurité de l'ONU.`],
+   [`Combien de jours fériés en France ?`,
+    `<b>11</b> : 1er janvier, lundi de Pâques, 1er mai, 8 mai, Ascension, lundi de Pentecôte, 14 juillet, 15 août, 1er novembre, 11 novembre, 25 décembre. + 2 en Alsace-Moselle, et l'abolition de l'esclavage dans les outre-mer.`]
+  ]},
+  {name:"État de droit & Institutions", qs:[
+   [`Quelle définition pour : État de droit ?`,
+    `Un État où <b>tout le monde, dirigeants compris, respecte le droit</b> : hiérarchie des normes (Constitution au sommet), séparation des pouvoirs, juges indépendants, droits fondamentaux garantis.`],
+   [`Quels sont les trois pouvoirs de la République française ? De quoi se compose chaque pouvoir ? Quelles sont leurs rôles ?`,
+    `<b>Législatif</b> : Parlement = Assemblée nationale (577 députés) + Sénat (348 sénateurs) ; vote les lois, contrôle le gouvernement. <b>Exécutif</b> : Président (élu 5 ans) + Gouvernement ; applique les lois. <b>Judiciaire</b> : juges et tribunaux ; règlent les conflits, sanctionnent.`],
+   [`Comment les lois sont-elles votées et adoptées ?`,
+    `Projet (Gouvernement) ou proposition de loi (parlementaires) → commission → vote à l'Assemblée et au Sénat (« navette ») → si désaccord, commission mixte paritaire → contrôle possible du Conseil constitutionnel → <b>promulgation</b> par le Président → <b>Journal officiel</b>.`],
+   [`Quelles sont les missions de la Préfecture ?`,
+    `Le préfet représente l'État dans le département : ordre public, gestion des crises, <b>titres de séjour</b> et naturalisation, contrôle de légalité des décisions des collectivités.`]
+  ]},
+  {name:"Organisation territoriale", qs:[
+   [`Quels sont les acteurs politiques au niveau local et leurs rôles ?`,
+    `<b>Maire</b> et conseil municipal (état civil, écoles, urbanisme) ; <b>conseil départemental</b> (action sociale, RSA, collèges) ; <b>conseil régional</b> (lycées, transports, économie, formation) ; intercommunalités ; le <b>préfet</b> pour l'État.`],
+   [`Le découpage administratif en France comprend : …………, ………… et …………`,
+    `<b>Communes, départements, régions.</b>`],
+   [`Que signifie la décentralisation ?`,
+    `L'État <b>transfère des compétences et des moyens</b> aux collectivités, qui s'administrent librement par des conseils élus (lois Defferre 1982). <i>Ex. : collèges = département, lycées = région.</i>`]
+  ]},
+  {name:"Union européenne", qs:[
+   [`Quelles étapes clés de la construction européenne ?`,
+    `1950 déclaration Schuman · 1951 CECA (6 pays) · 1957 traités de Rome · 1979 1re élection du Parlement européen · 1985 Schengen · 1992 Maastricht (UE) · 2002 euro · 2009 Lisbonne · 2020 Brexit → <b>27 États</b>.`],
+   [`Quels sont les symboles de l'UE ?`,
+    `Drapeau à <b>12 étoiles</b>, <i>Ode à la joie</i>, devise « Unie dans la diversité », <b>9 mai</b> Journée de l'Europe, l'euro.`],
+   [`Citez les différentes institutions européennes.`,
+    `Parlement européen, Conseil européen, Conseil de l'UE, Commission européenne, Cour de justice de l'UE, Banque centrale européenne, Cour des comptes européenne.`],
+   [`Combien de députés européens la France compte-t-elle ?`,
+    `<b>81</b> (mandat 2024-2029), sur 720, élus pour 5 ans.`]
+  ]}
+ ]},
+ J4:{label:"J4", rappel:"Rappel de la Journée 3", themes:[
+  {name:"Droits fondamentaux & Libertés", qs:[
+   [`Que signifie : Droits fondamentaux ?`,
+    `Les droits essentiels de toute personne, protégés par les textes les plus importants (Constitution, DDHC, Convention européenne des droits de l'homme). Ils s'imposent à la loi et à l'administration.`],
+   [`Quels sont ces droits ? Donnez des exemples.`,
+    `Vie et dignité, égalité, liberté d'expression, de conscience, de réunion, d'aller et venir, droit de vote, propriété, procès équitable, éducation, santé, grève, droit syndical…`],
+   [`Comment faire valoir ses droits ? Partagez vos connaissances (associations, adresses permanences d'accès aux droits…)`,
+    `<b>Points-justice</b> (3039), maisons de justice et du droit, <b>Défenseur des droits</b> (3928), France services, avocats (aide juridictionnelle), France Victimes (116 006), La Cimade, LDH.`],
+   [`Qu'est-ce que la Liberté ? Citez les types de libertés. Y a-t-il des limites pour chaque type ? Si oui, qui détermine ces limites ?`,
+    `« Pouvoir faire tout ce qui ne nuit pas à autrui » (art. 4 DDHC). Expression, conscience et religion, réunion, association, aller et venir, entreprendre, vie privée. <b>Limites fixées par la loi</b> (Parlement), contrôlées par le juge. <i>Ex. : pas de diffamation ni d'appel à la haine.</i>`],
+   [`Quelle est la date de rédaction de la Déclaration des Droits de l'Homme et du Citoyen ?`,
+    `Adoptée le <b>26 août 1789</b>.`]
+  ]},
+  {name:"Violences & protection", qs:[
+   [`Quels types de violences existe-t-il ?`,
+    `Physiques, psychologiques, verbales, sexuelles, <b>économiques</b>, <b>administratives</b> (confiscation des papiers), cyberviolences ; conjugales, intrafamiliales, faites aux enfants.`],
+   [`Pour protéger les victimes de violences, nous pouvons appeler les numéros : ………`,
+    `<b>17</b> ou <b>112</b> · <b>114</b> par SMS · <b>3919</b> violences faites aux femmes · <b>119</b> enfance en danger · <b>116 006</b> aide aux victimes · <b>3018</b> cyberharcèlement · arretonslesviolences.gouv.fr.`]
+  ]},
+  {name:"Géographie de la France", qs:[
+   [`La France s'étend sur une superficie de : ………………km²`,
+    `Environ <b>550 000 km²</b> en métropole, environ <b>633 000 km²</b> avec les départements d'outre-mer.`],
+   [`Elle compte : ………régions, ………départements et ………communes.`,
+    `<b>18 régions</b> (13 + 5 outre-mer), <b>101 départements</b>, environ <b>34 900 communes</b>.`],
+   [`Les principaux fleuves français sont : …………, …………, …………, …………`,
+    `<b>Loire</b>, <b>Seine</b>, <b>Rhône</b>, <b>Garonne</b> (+ le Rhin).`],
+   [`Quelle place économique occupe la France à l'échelle mondiale ? Et en Europe et UE ?`,
+    `Autour du <b>7e rang mondial</b> (PIB) ; <b>2e économie de l'UE</b> après l'Allemagne. 1re destination touristique mondiale, 1re puissance agricole de l'UE.`]
+  ]},
+  {name:"Francophonie & Culture", qs:[
+   [`Qu'est-ce que l'Organisation Internationale de la Francophonie ?`,
+    `Née en 1970 à Niamey, elle réunit près de 90 États et gouvernements ayant le français en partage ; promeut la langue, la diversité culturelle, la paix, la démocratie. Plus de 320 millions de francophones ; Journée le <b>20 mars</b>.`],
+   [`Les écrivains français ont-ils déjà remporté des prix Nobel de littérature ?`,
+    `<b>Oui, 16 fois</b>, record mondial : de Sully Prudhomme (1901) à Annie Ernaux (2022), avec Camus (1957), Sartre (1964, refusé), Modiano (2014).`],
+   [`Avez-vous visité des musées en France ? Avez-vous des bons plans à partager ? Musées gratuits etc. ?`,
+    `Gratuit pour les <b>moins de 26 ans</b> (résidents UE) dans les musées nationaux, souvent pour les demandeurs d'emploi ; 1er dimanche du mois dans de nombreux musées ; musées de la Ville de Paris (Petit Palais, Carnavalet…) ; Nuit des musées (mai), Journées du patrimoine (septembre).`]
+  ]}
+ ]}
+};
+
+const ROLES = {
+  lecteur:{icon:"📖",label:"Lecteur·rice",desc:"Lit chaque question à voix haute"},
+  secretaire:{icon:"✍️",label:"Secrétaire",desc:"Écrit les réponses du groupe"},
+  rapporteur:{icon:"🗣️",label:"Rapporteur·rice",desc:"Présente les réponses à la classe"},
+  temps:{icon:"⏱️",label:"Gardien·ne du temps",desc:"Surveille le chrono, fait avancer le groupe"},
+  participant:{icon:"👥",label:"Participant·e",desc:"Propose des idées et des exemples"}
+};
+const ROLE_ORDER = ["lecteur","secretaire","rapporteur","temps"];
+const FIELDS = [
+  {k:"r",icon:"✅",label:"Réponse",ph:"La réponse du groupe…"},
+  {k:"e",icon:"💬",label:"Explication simple",ph:"Expliquez avec des mots simples…"},
+  {k:"x",icon:"📌",label:"Exemple concret",ph:"Un exemple de la vie de tous les jours…"}
+];
+
+/* ===== Outils ===== */
+const $ = (s,el=document)=>el.querySelector(s);
+const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
+const app = $("#app");
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+const encode = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const decode = s => { try{ s=s.replace(/-/g,"+").replace(/_/g,"/"); return JSON.parse(decodeURIComponent(escape(atob(s)))); }catch(e){ return null; } };
+const baseURL = () => location.href.split("#")[0];
+const roleOf = (i,n) => ROLES[i < Math.min(n,4) ? ROLE_ORDER[i] : "participant"];
+function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2600); }
+function beep(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(); [0,.4,.8].forEach(t=>{ const o=a.createOscillator(),g=a.createGain(); o.frequency.value=880; o.connect(g); g.connect(a.destination); g.gain.setValueAtTime(.25,a.currentTime+t); g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t+.3); o.start(a.currentTime+t); o.stop(a.currentTime+t+.3); }); }catch(e){} }
+const ansKey = (sid,d,g,t) => `afec:ans:${sid}:${d}:${g}:${t.join("")}`;
+
+/* ===== État formateur ===== */
+let S = store.get("afec:trainer", null) || {day:"J2", names:"", size:4, groups:[], sid:null, imported:{}, timer:{dur:1500,left:1500,endAt:null}};
+const saveS = () => store.set("afec:trainer", S);
+const parseNames = () => [...new Set(S.names.split(/\n|;/).map(s=>s.trim()).filter(Boolean))];
+const newSid = () => Math.random().toString(36).slice(2,8);
+
+function themesFor(i,k){ const T=DATA[S.day].themes.length; return k>=T ? [i%T] : [...Array(T).keys()].filter(t=>t%k===i); }
+function formGroups(){
+  const names = parseNames();
+  if(names.length<2){ toast("Ajoutez au moins 2 stagiaires"); return false; }
+  for(let i=names.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [names[i],names[j]]=[names[j],names[i]]; }
+  const k = Math.max(1, Math.round(names.length / S.size));
+  const groups = Array.from({length:k},(_,i)=>({names:[], themes:themesFor(i,k)}));
+  names.forEach((n,i)=>groups[i%k].names.push(n));
+  S.groups=groups; S.sid=newSid(); S.imported={}; saveS(); return true;
+}
+const cfgFor = i => { const g=S.groups[i]; return {s:S.sid, d:S.day, g:i+1, t:g.themes, m:g.names.map((n,j)=>[n, j<Math.min(g.names.length,4)?ROLE_ORDER[j]:"participant"])}; };
+const groupHash = i => "#/g/" + encode(cfgFor(i));
+const groupURL = i => baseURL() + groupHash(i);
+
+/* ===== Chrono ===== */
+function timerHTML(full){
+  return `<div class="timer ${full?"timer-full":""}">
+    <div class="tdisp" data-tdisp>--:--</div>
+    <div class="tbar"><div data-tbar></div></div>
+    <div class="row no-print">
+      ${[20,25,30].map(m=>`<button class="btn sm" data-tset="${m}">${m} min</button>`).join("")}
+      <button class="btn sm go" data-tgo>Démarrer</button>
+      <button class="btn sm" data-treset title="Remettre à zéro">↺</button>
+      ${full?`<button class="btn sm" data-tfull title="Plein écran">⛶</button>`:""}
+    </div></div>`;
+}
+function bindTimer(root,T,save){
+  clearInterval(window._tick);
+  const disp=$("[data-tdisp]",root), bar=$("[data-tbar]",root), go=$("[data-tgo]",root);
+  const rem = () => T.endAt ? Math.max(0,(T.endAt-Date.now())/1000) : T.left;
+  function paint(){
+    const r=rem(), m=Math.floor(r/60), s=Math.floor(r%60);
+    disp.textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    bar.style.width = (100*r/T.dur)+"%";
+    disp.classList.toggle("low", r>0 && r<=300);
+    disp.classList.toggle("done", r<=0);
+    go.textContent = T.endAt ? "Pause" : (r<=0 ? "Temps écoulé" : (r<T.dur ? "Reprendre" : "Démarrer"));
+    if(T.endAt && r<=0){ T.endAt=null; T.left=0; save(); beep(); }
+  }
+  $$("[data-tset]",root).forEach(b=>b.onclick=()=>{ T.dur=T.left=+b.dataset.tset*60; T.endAt=null; save(); paint(); });
+  go.onclick=()=>{ if(T.endAt){ T.left=rem(); T.endAt=null; } else if(T.left>0){ T.endAt=Date.now()+T.left*1000; } save(); paint(); };
+  $("[data-treset]",root).onclick=()=>{ T.left=T.dur; T.endAt=null; save(); paint(); };
+  const f=$("[data-tfull]",root); if(f) f.onclick=()=>{ const el=$(".timer-full",root); document.fullscreenElement?document.exitFullscreen():el.requestFullscreen?.(); };
+  paint(); window._tick=setInterval(paint,250);
+}
+
+/* ===== Routes ===== */
+function route(){
+  clearInterval(window._tick);
+  const h = location.hash.slice(1) || "/";
+  if(h.startsWith("/g/")){ const c=decode(h.slice(3)); c && DATA[c.d] ? renderGroup(c) : renderError(); }
+  else if(h==="/formateur") renderTrainer();
+  else if(h.startsWith("/restitution/")) renderRestitution(+h.split("/")[2]);
+  else if(h==="/qr") renderQRWall();
+  else if(h==="/pistes") renderPistes();
+  else if(h==="/rejoindre") renderJoin();
+  else renderHome();
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange", route);
+
+function renderError(){
+  app.innerHTML = `<div class="panel"><h2>Ce lien de groupe n'est pas valide</h2><p class="muted">Scannez à nouveau le QR code du formateur, ou choisissez votre groupe.</p><a class="btn primary" href="#/rejoindre">Choisir mon groupe</a></div>`;
+}
+
+function renderHome(){
+  app.innerHTML = `
+  <section class="hero">
+    <h1>Réactivation des connaissances</h1>
+    <p>En équipe de 4, 20 à 30 minutes pour répondre, expliquer simplement et donner un exemple concret. Puis chaque groupe présente à la classe.</p>
+  </section>
+  <div class="choices">
+    <a class="choice" href="#/formateur"><span class="cut" aria-hidden="true">✂</span><span class="ico" aria-hidden="true">🎓</span><h2>Espace formateur</h2><p>Former les groupes, distribuer les QR codes, lancer le chrono et animer la restitution.</p></a>
+    <a class="choice g" href="#/rejoindre"><span class="cut" aria-hidden="true">✂</span><span class="ico" aria-hidden="true">👥</span><h2>Espace groupe</h2><p>Scannez le QR code de votre groupe. Pas de QR code ? Choisissez votre groupe ici.</p></a>
+  </div>`;
+}
+
+function renderJoin(){
+  let day = "J2";
+  const draw = () => {
+    app.innerHTML = `
+    <div class="toolbar"><a href="#/" class="btn ghost">← Accueil</a><h1>Rejoindre mon groupe</h1></div>
+    <div class="panel">
+      <p class="muted" style="margin-top:0">Choisissez la journée, puis le thème de votre groupe.</p>
+      <div class="days">${Object.keys(DATA).map(k=>`<button class="day ${k===day?"on":""}" data-day="${k}"><b>${k}</b><span>${DATA[k].rappel}</span></button>`).join("")}</div>
+      <div class="groups">${DATA[day].themes.map((t,i)=>`
+        <a class="gcard" style="text-decoration:none;color:inherit" href="#/g/${encode({s:"libre",d:day,g:i+1,t:[i],m:[]})}">
+          <span class="gnum">Groupe ${i+1}</span>
+          <div class="themes"><span class="theme t${i%2}">${esc(t.name)}</span></div>
+          <p class="muted" style="margin:0">${t.qs.length} questions</p>
+        </a>`).join("")}</div>
+    </div>`;
+    $$("[data-day]").forEach(b=>b.onclick=()=>{ day=b.dataset.day; draw(); });
+  };
+  draw();
+}
+
+/* ===== Espace formateur ===== */
+function groupCard(g,i){
+  const D=DATA[S.day];
+  return `<article class="gcard">
+    <span class="gnum">Groupe ${i+1}</span>
+    <div class="themes">${g.themes.map(t=>`<span class="theme t${t%2}">${esc(D.themes[t].name)}</span>`).join("")}</div>
+    <ul class="members">${g.names.map((n,j)=>{ const r=roleOf(j,g.names.length); return `<li><span class="rchip" title="${esc(r.desc)}">${r.icon} ${r.label}</span> ${esc(n)}</li>`; }).join("")}</ul>
+    <footer><button class="btn sm" data-qr="${i}">📱 QR code</button><a class="btn sm ghost" href="${groupHash(i)}" target="_blank" rel="noopener">Ouvrir l'espace</a></footer>
+  </article>`;
+}
+
+function renderTrainer(){
+  app.innerHTML = `
+  <div class="toolbar"><a href="#/" class="btn ghost">← Accueil</a><h1>Espace formateur</h1></div>
+  <div class="days">${Object.keys(DATA).map(k=>`<button class="day ${k===S.day?"on":""}" data-day="${k}"><b>${k}</b><span>${DATA[k].rappel}</span></button>`).join("")}</div>
+  <section class="panel">
+    <div class="panel-h"><span class="step">1</span><h2>Stagiaires</h2></div>
+    <textarea id="names" rows="7" placeholder="Un prénom par ligne">${esc(S.names)}</textarea>
+    <div class="row" style="margin-top:12px">
+      <label>Personnes par groupe <select id="size">${[3,4,5].map(x=>`<option ${x==S.size?"selected":""}>${x}</option>`).join("")}</select></label>
+      <span class="muted" id="count"></span><span class="spacer"></span>
+      <button class="btn primary" id="form">🎲 Former les groupes au hasard</button>
+    </div>
+  </section>
+  <section class="panel">
+    <div class="panel-h"><span class="step">2</span><h2>Groupes et rôles</h2><span class="spacer"></span>
+      ${S.groups.length?`<button class="btn sm" id="rotate" title="Chacun prend le rôle suivant">🔄 Faire tourner les rôles</button><a class="btn sm primary" href="#/qr">📱 Projeter les QR codes</a>`:""}
+    </div>
+    <div class="groups">${S.groups.length ? S.groups.map(groupCard).join("") : `<p class="empty">Saisissez les stagiaires puis formez les groupes.</p>`}</div>
+  </section>
+  <section class="panel" id="tpanel">
+    <div class="panel-h"><span class="step">3</span><h2>Chrono de la classe</h2></div>
+    ${timerHTML(true)}
+  </section>
+  <section class="panel">
+    <div class="panel-h"><span class="step">4</span><h2>Restitution</h2></div>
+    <p class="muted" style="margin-top:0">Chaque groupe clique sur « Envoyer au formateur » et vous transmet son fichier. Importez-les ici pour les projeter. Sans fichier, le rapporteur présente depuis sa tablette.</p>
+    <div class="row">
+      <label class="btn">📥 Importer des réponses<input type="file" id="imp" accept=".json,application/json" multiple hidden></label>
+      ${S.groups.map((g,i)=>`<a class="btn sm ${S.imported[i+1]?"ok":""}" href="#/restitution/${i+1}">${S.imported[i+1]?"✓ ":""}Présenter le groupe ${i+1}</a>`).join("")}
+    </div>
+  </section>
+  <section class="panel">
+    <div class="panel-h"><span class="step" style="background:var(--amber)">?</span><h2>Pistes de réponse ${S.day}</h2><span class="spacer"></span><a class="btn sm" href="#/pistes">Consulter les pistes</a></div>
+    <p class="muted" style="margin:0">Pour préparer la séance et compléter la restitution. Non visibles par les stagiaires.</p>
+  </section>`;
+
+  const count = () => { const n=parseNames().length; $("#count").textContent = n ? `${n} stagiaire${n>1?"s":""} → ${Math.max(1,Math.round(n/S.size))} groupe(s)` : ""; };
+  count();
+  $("#names").oninput = e => { S.names=e.target.value; saveS(); count(); };
+  $("#size").onchange = e => { S.size=+e.target.value; saveS(); count(); };
+  $("#form").onclick = () => { if(S.groups.length && !confirm("Former de nouveaux groupes ? Les anciens QR codes ne seront plus valables.")) return; if(formGroups()) renderTrainer(); };
+  $$("[data-day]").forEach(b=>b.onclick=()=>{ S.day=b.dataset.day; S.imported={}; if(S.groups.length){ S.groups.forEach((g,i)=>g.themes=themesFor(i,S.groups.length)); S.sid=newSid(); } saveS(); renderTrainer(); });
+  const rot=$("#rotate"); if(rot) rot.onclick=()=>{ S.groups.forEach(g=>g.names.push(g.names.shift())); saveS(); renderTrainer(); toast("Rôles changés : redistribuez les QR codes"); };
+  $$("[data-qr]").forEach(b=>b.onclick=()=>showQR(+b.dataset.qr));
+  $("#imp").onchange = async e => {
+    let ok=0, bad=0;
+    for(const f of e.target.files){
+      try{ const o=JSON.parse(await f.text()); if(o.type!=="afec-reponses"||!o.g||o.d!==S.day) throw 0; S.imported[o.g]={answers:o.answers}; ok++; }
+      catch(_){ bad++; }
+    }
+    saveS(); renderTrainer(); toast(`${ok} fichier(s) importé(s)` + (bad?` · ${bad} ignoré(s)`:""));
+  };
+  bindTimer($("#tpanel"), S.timer, saveS);
+}
+
+function drawQR(el,url,size){
+  if(window.QRCode){ new QRCode(el,{text:url,width:size,height:size,correctLevel:QRCode.CorrectLevel.L}); }
+  else el.innerHTML = `<p class="muted">QR code indisponible hors connexion. Partagez le lien.</p>`;
+}
+function showQR(i){
+  const m=document.createElement("div"); m.className="modal";
+  m.innerHTML = `<div class="box" role="dialog">
+    <h2>Groupe ${i+1}</h2>
+    <p class="muted" style="margin:.3em 0">${S.groups[i].names.map(esc).join(", ")}</p>
+    <div class="qrbox" id="qrm"></div>
+    <div class="link">${esc(groupURL(i))}</div>
+    <div class="row" style="justify-content:center;margin-top:12px">
+      <button class="btn sm" id="cp">Copier le lien</button><button class="btn sm primary" id="cl">Fermer</button>
+    </div></div>`;
+  document.body.appendChild(m);
+  drawQR($("#qrm",m), groupURL(i), 240);
+  $("#cp",m).onclick=()=>navigator.clipboard?.writeText(groupURL(i)).then(()=>toast("Lien copié"));
+  $("#cl",m).onclick=()=>m.remove(); m.onclick=e=>{ if(e.target===m) m.remove(); };
+}
+
+function renderQRWall(){
+  if(!S.groups.length){ location.hash="#/formateur"; return; }
+  const D=DATA[S.day];
+  app.innerHTML = `
+  <div class="toolbar"><a href="#/formateur" class="btn ghost">← Retour</a><h1>Scannez le QR code de votre groupe</h1></div>
+  ${location.protocol==="file:"?`<div class="notice">⚠️ Page ouverte en local : les QR codes ne fonctionneront qu'une fois la page hébergée en ligne (https).</div>`:""}
+  <div class="qrwall">${S.groups.map((g,i)=>`
+    <div class="qrcard">
+      <span class="gnum">Groupe ${i+1}</span>
+      <div class="themes" style="justify-content:center">${g.themes.map(t=>`<span class="theme t${t%2}">${esc(D.themes[t].name)}</span>`).join("")}</div>
+      <div class="qrbox" data-q="${i}"></div>
+      <div class="names">${g.names.map(esc).join(" · ")}</div>
+    </div>`).join("")}</div>`;
+  $$("[data-q]").forEach(el=>drawQR(el, groupURL(+el.dataset.q), 200));
+}
+
+/* ===== Restitution ===== */
+function answersView(D, themes, answers, withPistes){
+  return themes.map(t=>`
+    <section class="tblock t${t%2}"><h2>${esc(D.themes[t].name)}</h2>
+    ${D.themes[t].qs.map(([q,p],qi)=>{ const a=answers[`${t}-${qi}`]||{}; return `
+      <div class="aq"><h3>${qi+1}. ${esc(q)}</h3>
+        ${FIELDS.map(f=>`<div class="aline"><b>${f.icon} ${f.label}</b><div class="v ${a[f.k]?.trim()?"":"none"}">${a[f.k]?.trim()?esc(a[f.k]):"—"}</div></div>`).join("")}
+        ${withPistes?`<div class="piste"><b>Piste formateur :</b> ${p}</div>`:""}
+      </div>`; }).join("")}
+    </section>`).join("");
+}
+
+function renderRestitution(g){
+  const D=DATA[S.day], grp=S.groups[g-1];
+  if(!grp){ location.hash="#/formateur"; return; }
+  const local=store.get(ansKey(S.sid,S.day,g,grp.themes),null);
+  const answers = S.imported[g]?.answers || local?.answers || {};
+  const has = Object.values(answers).some(a=>Object.values(a).some(v=>v&&v.trim()));
+  const rap = grp.names.find((n,j)=>roleOf(j,grp.names.length)===ROLES.rapporteur);
+  app.innerHTML = `
+  <div class="toolbar">
+    <a href="#/formateur" class="btn ghost">← Retour</a>
+    <h1>Restitution du groupe ${g}</h1><span class="spacer"></span>
+    <label class="switch"><input type="checkbox" id="pist"> Afficher les pistes</label>
+    ${g>1?`<a class="btn sm" href="#/restitution/${g-1}">‹ Groupe ${g-1}</a>`:""}
+    ${g<S.groups.length?`<a class="btn sm" href="#/restitution/${g+1}">Groupe ${g+1} ›</a>`:""}
+  </div>
+  <p style="margin-top:0">${rap?`🗣️ <b>${esc(rap)}</b> présente. `:""}<span class="muted">${grp.names.map(esc).join(", ")}</span></p>
+  ${has?"":`<div class="notice">Réponses pas encore importées. Le rapporteur peut présenter depuis sa tablette ; les questions et pistes restent affichées ici.</div>`}
+  <div id="av" class="av big hide-pistes">${answersView(D, grp.themes, answers, true)}</div>`;
+  $("#pist").onchange = e => $("#av").classList.toggle("hide-pistes", !e.target.checked);
+}
+
+function renderPistes(){
+  const D=DATA[S.day];
+  app.innerHTML = `
+  <div class="toolbar"><a href="#/formateur" class="btn ghost">← Retour</a><h1>Pistes de réponse ${D.label}</h1><span class="spacer"></span><button class="btn sm" onclick="print()">🖨️ Imprimer</button></div>
+  <p class="muted">${D.rappel}. Pistes indicatives : vérifiez les règles administratives sur service-public.fr avant la séance.</p>
+  ${D.themes.map((th,t)=>`<section class="tblock t${t%2}"><h2>Groupe ${t+1} : ${esc(th.name)}</h2>
+    ${th.qs.map(([q,p],qi)=>`<div class="aq"><h3>${qi+1}. ${esc(q)}</h3><div class="piste" style="margin-top:0">${p}</div></div>`).join("")}</section>`).join("")}`;
+}
+
+/* ===== Espace groupe ===== */
+function renderGroup(c){
+  const D=DATA[c.d];
+  const key=ansKey(c.s||"libre",c.d,c.g,c.t);
+  const st=store.get(key,{answers:{},timer:{dur:1500,left:1500,endAt:null}});
+  const save=()=>store.set(key,st);
+  const members=c.m||[];
+  const total=c.t.reduce((s,t)=>s+D.themes[t].qs.length*FIELDS.length,0);
+
+  app.innerHTML = `
+  <div class="ghead">
+    <div>
+      <p class="kicker">${D.label} · ${D.rappel}</p>
+      <h1>Groupe ${c.g}</h1>
+      <div class="themes">${c.t.map(t=>`<span class="theme t${t%2}">${esc(D.themes[t].name)}</span>`).join("")}</div>
+    </div>
+    <div class="no-print" id="gt">${timerHTML(false)}</div>
+  </div>
+  <section class="panel">
+    <div class="panel-h"><h2>${members.length?"Qui fait quoi ?":"Répartissez les rôles"}</h2></div>
+    <div class="roles">${members.length
+      ? members.map(([n,r])=>{ const R=ROLES[r]||ROLES.participant; return `<div class="role"><b>${R.icon} ${esc(n)}</b><span>${R.label} : ${R.desc}</span></div>`; }).join("")
+      : ROLE_ORDER.map(r=>`<div class="role"><b>${ROLES[r].icon} ${ROLES[r].label}</b><span>${ROLES[r].desc}</span></div>`).join("")}
+    </div>
+    <p class="muted" style="margin:12px 0 0">Tout le monde participe. Pour chaque question : répondez, expliquez simplement, donnez au moins un exemple concret.</p>
+  </section>
+  <div class="progress"><div class="pbar"><div id="pfill"></div></div><span id="ptext" class="muted"></span><span id="saved" class="saved"></span></div>
+  ${c.t.map(t=>`<section class="tblock t${t%2}"><h2>${esc(D.themes[t].name)}</h2>
+    ${D.themes[t].qs.map(([q],qi)=>{ const k=`${t}-${qi}`, a=st.answers[k]||{}; return `
+      <article class="qcard" data-k="${k}">
+        <div class="qhead"><span class="qn">${qi+1}</span><h3>${esc(q)}</h3></div>
+        <div class="fields">${FIELDS.map(f=>`
+          <label><span class="flabel"><i class="dot ${a[f.k]?.trim()?"on":""}" data-dot="${f.k}"></i>${f.icon} ${f.label}</span>
+          <textarea data-f="${f.k}" rows="2" placeholder="${f.ph}">${esc(a[f.k]||"")}</textarea></label>`).join("")}
+        </div>
+      </article>`; }).join("")}
+  </section>`).join("")}
+  <div class="actions">
+    <button class="btn" id="present">🗣️ Présenter nos réponses</button>
+    <button class="btn primary" id="export">📤 Envoyer au formateur</button>
+    <button class="btn" onclick="print()">🖨️ Imprimer</button>
+  </div>`;
+
+  function progress(){
+    let done=0;
+    $$(".qcard").forEach(card=>{
+      const a=st.answers[card.dataset.k]||{}; const n=FIELDS.filter(f=>a[f.k]?.trim()).length; done+=n;
+      card.classList.toggle("complete", n===FIELDS.length);
+    });
+    $("#pfill").style.width=(100*done/total)+"%";
+    $("#ptext").textContent=`${done} / ${total} cases remplies`;
+  }
+  progress();
+
+  let tmo;
+  $$("textarea[data-f]").forEach(ta=>{
+    const fit=()=>{ ta.style.height="auto"; ta.style.height=ta.scrollHeight+4+"px"; }; fit();
+    ta.addEventListener("input",()=>{
+      fit();
+      const card=ta.closest(".qcard"), k=card.dataset.k, f=ta.dataset.f;
+      (st.answers[k] ||= {})[f]=ta.value;
+      $(`[data-dot="${f}"]`,card).classList.toggle("on", !!ta.value.trim());
+      progress(); $("#saved").textContent="…";
+      clearTimeout(tmo); tmo=setTimeout(()=>{ save(); $("#saved").textContent="✓ Enregistré"; },400);
+    });
+  });
+
+  $("#export").onclick=()=>{
+    save();
+    const data={type:"afec-reponses", s:c.s, d:c.d, g:c.g, t:c.t, m:members, date:new Date().toISOString(), answers:st.answers};
+    const blob=new Blob([JSON.stringify(data,null,1)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`${c.d}_groupe${c.g}_reponses.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    toast("Fichier téléchargé : transmettez-le au formateur");
+  };
+  $("#present").onclick=()=>{
+    const m=document.createElement("div"); m.className="modal"; m.style.placeItems="start center"; m.style.overflow="auto";
+    m.innerHTML=`<div class="box" style="max-width:900px;text-align:left">
+      <div class="row"><h2>Groupe ${c.g} présente</h2><span class="spacer"></span><button class="btn sm primary" id="cl">Fermer</button></div>
+      <div class="av big">${answersView(D,c.t,st.answers,false)}</div></div>`;
+    document.body.appendChild(m); $("#cl",m).onclick=()=>m.remove();
+  };
+  bindTimer($("#gt"), st.timer, save);
+}
+
+route();
+</script>
+</body>
+</html>
